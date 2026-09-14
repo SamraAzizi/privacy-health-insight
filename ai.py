@@ -21,7 +21,8 @@ def format_logs_for_llm(df: pd.DataFrame) -> str:
         )
     return formatted_text
 
-    def check_local_ollama_status() -> bool:
+
+def check_local_ollama_status() -> bool:
     """Checks if Ollama service is running locally."""
     try:
         response = requests.get("http://localhost:11434/", timeout=2)
@@ -48,3 +49,27 @@ def generate_health_summary_ollama(df: pd.DataFrame, model_name: str = DEFAULT_M
         "3. DO NOT offer medical advice, diagnoses, or clinical suggestions under any circumstance.\n"
         "4. Keep the entire response under 150 words."
     )
+
+    full_prompt = f"{system_prompt}\n\n{logs_context}\nProvide your brief wellbeing insight:"
+
+    payload = {
+        "model": model_name,
+        "prompt": full_prompt,
+        "stream": False
+    }
+
+    try:
+        response = requests.post(OLLAMA_ENDPOINT, json=payload, timeout=30)
+        if response.status_code == 200:
+            result = response.json()
+            return {"success": True, "summary": result.get("response", "").strip()}
+        else:
+            return {"success": False, "error": f"Ollama returned status code {response.status_code}"}
+            
+    except requests.exceptions.ConnectionError:
+        return {
+            "success": False,
+            "error": "Could not connect to local Ollama server. Is Ollama running on http://localhost:11434?"
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
