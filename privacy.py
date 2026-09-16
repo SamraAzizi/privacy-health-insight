@@ -23,3 +23,38 @@ def render_privacy_policy():
         4. **Data Ownership:** You can export or erase your dataset at any time using the tools on this page.
         """
     )
+    def render_data_management():
+    """Renders options for exporting, importing, and deleting local data."""
+    st.markdown("## 💾 Data Portability & Backup Tools")
+    
+    df_logs = db.fetch_all_metrics()
+    
+    col_export, col_import = st.columns(2, gap="large")
+    
+    # --- EXPORT DATA ---
+    with col_export:
+        st.subheader("📤 Export Local Data")
+        st.caption("Download your health metrics as a local backup file.")
+        
+        if not df_logs.empty:
+            # CSV Download Button
+            csv_data = df_logs.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="Download as CSV",
+                data=csv_data,
+                file_name="health_data_backup.csv",
+                mime="text/csv",
+                use_container_width=True
+            )
+            
+            # JSON Download Button
+            json_data = df_logs.to_json(orient="records", indent=2)
+            st.download_button(
+                label="Download as JSON",
+                data=json_data,
+                file_name="health_data_backup.json",
+                mime="application/json",
+                use_container_width=True
+            )
+        else:
+            st.warning("No data available to export yet.")
