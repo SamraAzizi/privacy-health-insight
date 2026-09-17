@@ -1,10 +1,12 @@
 import streamlit as st
 import datetime
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import db
+import ai
+import privacy
+
 
 # -----------------------------------------------------------------------------
 # App Configuration & Setup
@@ -45,14 +47,14 @@ col_form, col_history = st.columns([1, 1.2], gap="large")
 # --- COLUMN 1: Daily Logging Form ---
 with col_form:
     st.subheader("📝 Log Daily Metrics")
-    
+
     with st.form("health_metric_form", clear_on_submit=False):
         selected_date = st.date_input(
             "Log Date",
             value=datetime.date.today(),
             max_value=datetime.date.today()
         )
-        
+
         sleep_hours = st.number_input(
             "Sleep Duration (Hours)",
             min_value=0.0,
@@ -60,7 +62,7 @@ with col_form:
             value=7.5,
             step=0.5
         )
-        
+
         steps = st.number_input(
             "Steps Count",
             min_value=0,
@@ -68,22 +70,22 @@ with col_form:
             value=8000,
             step=500
         )
-        
+
         mood = st.slider(
             "Mood Rating (1 = Low, 10 = High)",
             min_value=1,
             max_value=10,
             value=7
         )
-        
+
         notes = st.text_area(
             "Daily Journal / Notes (Optional)",
             placeholder="Felt energetic after morning walk...",
             height=100
         )
-        
+
         submitted = st.form_submit_button("Save Entry", use_container_width=True)
-        
+
         if submitted:
             date_str = selected_date.strftime("%Y-%m-%d")
             success = db.save_daily_metric(
@@ -93,7 +95,7 @@ with col_form:
                 mood=mood,
                 notes=notes
             )
-            
+
             if success:
                 st.success(f"✅ Entry saved for {date_str}!")
                 st.rerun()
@@ -103,14 +105,14 @@ with col_form:
 # --- COLUMN 2: Historical Logs ---
 with col_history:
     st.subheader("📋 Log History")
-    
+
     df_logs = db.fetch_all_metrics()
-    
+
     if df_logs.empty:
         st.info("No records logged yet. Use the form on the left to add your first entry!")
     else:
         st.caption(f"Total Logs Recorded: **{len(df_logs)}**")
-        
+
         st.dataframe(
             df_logs,
             column_config={
@@ -123,7 +125,7 @@ with col_history:
             hide_index=True,
             use_container_width=True
         )
-        
+
         with st.expander("🗑️ Delete an Entry"):
             dates_available = df_logs["log_date"].tolist()
             date_to_delete = st.selectbox("Select Date to Delete", options=dates_available)
@@ -152,7 +154,7 @@ if not df_logs.empty:
             options=["Last 7 Days", "Last 30 Days", "All Time"],
             index=0
         )
-    
+
     # Filter Data based on user selection
     max_date = df_logs["log_date"].max()
     if time_filter == "Last 7 Days":
