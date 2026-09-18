@@ -6,13 +6,13 @@ Unlike conventional health-tracking apps that upload sensitive personal data to 
 
 ---
 
-## ✨ Features
+##  Features
 
-- **📝 Daily Metrics Logging:** Easily log sleep duration, step counts, mood ratings (1–10), and optional journal notes.
-- **📊 Interactive Analytics:** Multi-metric time-series visualizations powered by Plotly with synchronized hover tooltips and dynamic time-range filtering (Last 7 Days, Last 30 Days, All Time).
-- **🤖 Local AI Summaries:** Opt-in, privacy-preserving AI reflections using local open-source LLMs (via Ollama) with zero data leaving your machine.
-- **💾 Complete Data Sovereignty:** Export your dataset to CSV or JSON format, restore/import backups, and delete entries anytime.
-- **🛡️ Built-in Privacy Disclosures:** Clear, accessible in-app documentation detailing local data storage mechanics.
+- ** Daily Metrics Logging:** Easily log sleep duration, step counts, mood ratings (1–10), and optional journal notes.
+- ** Interactive Analytics:** Multi-metric time-series visualizations powered by Plotly with synchronized hover tooltips and dynamic time-range filtering (Last 7 Days, Last 30 Days, All Time).
+- ** Local AI Summaries:** Opt-in, privacy-preserving AI reflections using local open-source LLMs (via Ollama) with zero data leaving your machine.
+- ** Complete Data Sovereignty:** Export your dataset to CSV or JSON format, restore/import backups, and delete entries anytime.
+- ** Built-in Privacy Disclosures:** Clear, accessible in-app documentation detailing local data storage mechanics.
 
 ---
 
@@ -26,7 +26,7 @@ Unlike conventional health-tracking apps that upload sensitive personal data to 
 
 ---
 
-## 📂 Project Architecture
+##  Project Architecture
 
 ```text
 health-insight-app/
@@ -58,3 +58,22 @@ cd privacy-health-insight-app
     python -m venv .venv
     .venv\Scripts\activate
     ```
+
+3. Install required packages:
+```bash
+pip install -r requirements.txt
+```
+4. Launch the application:
+```
+streamlit run app.py
+```
+The app will automatically open in your default browser at `http://localhost:8501`.
+
+### Optinal 
+1. Download and install Ollama from ollama.com.
+
+2. Start the local model in your system terminal
+```bash
+ollama run llama3.2
+```
+3. In the app, navigate to the Local AI Wellbeing Summary section, check Enable AI Insights Engine (Opt-In), and click Generate Summary.
